@@ -11,26 +11,29 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SENTINEL">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <title>SENTINEL — Smart Home Monitoring</title>
+  <title>SENTINEL — Smart Home Monitoring & Control</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <style>
     :root {
-      --bg: #0B0F14;
-      --panel: #121820;
-      --panel-raised: #161E27;
-      --line: #232D38;
-      --text: #DDE4EA;
-      --text-dim: #7C8896;
-      --text-faint: #4B5561;
-      --signal-ok: #3DD68C;
-      --signal-warn: #F5A623;
-      --signal-alert: #F0563D;
-      --signal-alert-glow: rgba(240, 86, 61, 0.35);
-      --signal-ok-glow: rgba(61, 214, 140, 0.25);
-      --radar-line: rgba(61, 214, 140, 0.55);
+      --bg: #F1F5F9;
+      --panel: #FFFFFF;
+      --panel-raised: #F8FAFC;
+      --line: #E2E8F0;
+      --line-accent: #CBD5E1;
+      --text: #0F172A;
+      --text-dim: #475569;
+      --text-faint: #94A3B8;
+      --signal-ok: #10B981;
+      --signal-warn: #F59E0B;
+      --signal-alert: #EF4444;
+      --signal-alert-glow: rgba(239, 68, 68, 0.25);
+      --signal-ok-glow: rgba(16, 185, 129, 0.2);
+      --radar-line: rgba(16, 185, 129, 0.5);
+      --bulb-on: #EAB308;
+      --bulb-on-glow: rgba(234, 179, 8, 0.45);
     }
 
     * {
@@ -40,8 +43,7 @@
     }
 
     body {
-      background:
-        radial-gradient(ellipse 1200px 600px at 50% -10%, #141B24 0%, var(--bg) 60%);
+      background: var(--bg);
       color: var(--text);
       font-family: 'Space Grotesk', sans-serif;
       min-height: 100vh;
@@ -49,7 +51,7 @@
     }
 
     .wrap {
-      max-width: 1180px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
@@ -61,17 +63,18 @@
       flex-wrap: wrap;
       gap: 16px;
       padding-bottom: 22px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 2px solid var(--line);
       margin-bottom: 28px;
     }
 
     .brand-eyebrow {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       color: var(--text-faint);
       text-transform: uppercase;
       margin-bottom: 6px;
+      font-weight: 600;
     }
 
     h1 {
@@ -79,6 +82,7 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       line-height: 1;
+      color: var(--text);
     }
 
     h1 span {
@@ -99,11 +103,12 @@
       letter-spacing: 1px;
       color: var(--text-dim);
       text-transform: uppercase;
+      font-weight: 600;
     }
 
     .dot {
-      width: 8px;
-      height: 8px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: var(--text-faint);
       flex-shrink: 0;
@@ -111,13 +116,13 @@
 
     .dot.live {
       background: var(--signal-ok);
-      box-shadow: 0 0 8px var(--signal-ok-glow);
+      box-shadow: 0 0 10px var(--signal-ok-glow);
       animation: pulse-dot 2s infinite;
     }
 
     .dot.down {
       background: var(--signal-alert);
-      box-shadow: 0 0 8px var(--signal-alert-glow);
+      box-shadow: 0 0 10px var(--signal-alert-glow);
     }
 
     @keyframes pulse-dot {
@@ -136,7 +141,7 @@
       font-size: 20px;
       color: var(--text);
       margin-top: 6px;
-      font-weight: 500;
+      font-weight: 700;
     }
 
     .clock-date {
@@ -148,8 +153,8 @@
     /* ============ GRID ============ */
     .grid {
       display: grid;
-      grid-template-columns: 1.15fr 1fr 0.85fr;
-      gap: 18px;
+      grid-template-columns: 1.1fr 1.1fr 0.8fr;
+      gap: 20px;
     }
 
     @media (max-width:980px) {
@@ -161,17 +166,19 @@
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
     }
 
     .panel-title {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       letter-spacing: 2px;
-      color: var(--text-faint);
+      color: var(--text-dim);
       text-transform: uppercase;
-      margin-bottom: 16px;
+      font-weight: 700;
+      margin-bottom: 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -189,6 +196,9 @@
       aspect-ratio: 1 / 0.72;
       max-height: 280px;
       margin: 0 auto;
+      background: #0B0F14;
+      border-radius: 12px;
+      padding: 10px;
     }
 
     .radar-stage svg {
@@ -198,7 +208,7 @@
     }
 
     .radar-grid-line {
-      stroke: var(--line);
+      stroke: rgba(255, 255, 255, 0.15);
       stroke-width: 1;
       fill: none;
     }
@@ -225,7 +235,7 @@
     .radar-node-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      fill: var(--text-dim);
+      fill: var(--text-faint);
     }
 
     .rcwl-single {
@@ -235,15 +245,15 @@
     .rcwl-item {
       background: var(--panel-raised);
       border: 1px solid var(--line);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 16px 12px;
       text-align: center;
-      transition: border-color 0.25s ease, background 0.25s ease;
+      transition: all 0.25s ease;
     }
 
     .rcwl-item.active {
       border-color: var(--signal-alert);
-      background: linear-gradient(180deg, rgba(240, 86, 61, 0.10), rgba(240, 86, 61, 0.03));
+      background: #FEF2F2;
     }
 
     .rcwl-label {
@@ -252,6 +262,7 @@
       letter-spacing: 1.5px;
       color: var(--text-faint);
       text-transform: uppercase;
+      font-weight: 600;
     }
 
     .rcwl-state {
@@ -270,7 +281,7 @@
       background: var(--panel-raised);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 16px 18px;
+      padding: 14px 18px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -290,7 +301,7 @@
 
     .sensor-name {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text);
     }
 
@@ -302,46 +313,79 @@
 
     .sensor-value {
       text-align: right;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
     .sensor-num {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 22px;
-      font-weight: 600;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
     }
 
     .sensor-tag {
       display: inline-block;
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
+      font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
       padding: 3px 8px;
-      border-radius: 20px;
-      margin-top: 4px;
+      border-radius: 6px;
     }
 
     .tag-ok {
-      background: rgba(61, 214, 140, 0.12);
-      color: var(--signal-ok);
+      background: #E6F4EA;
+      color: #137333;
     }
 
     .tag-warn {
-      background: rgba(245, 166, 35, 0.12);
-      color: var(--signal-warn);
+      background: #FEF3C7;
+      color: #D97706;
     }
 
     .tag-alert {
-      background: rgba(240, 86, 61, 0.14);
-      color: var(--signal-alert);
+      background: #FEE2E2;
+      color: #DC2626;
     }
 
-    /* ============ RELAYS ============ */
+    /* ============ IKON LAMPU ============ */
+    .light-bulb-icon {
+      width: 34px;
+      height: 34px;
+      fill: #CBD5E1;
+      transition: fill 0.3s ease, filter 0.3s ease;
+    }
+
+    .light-bulb-icon.active {
+      fill: var(--bulb-on);
+      filter: drop-shadow(0px 0px 8px var(--bulb-on-glow));
+    }
+
+    /* ============ SAKLAR FISIK REALISTIS 3D (ROCKER SWITCH) ============ */
+    .control-section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin: 14px 0 10px 0;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .control-section-title:first-child {
+      margin-top: 0;
+    }
+
     .relay-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 13px 4px;
+      padding: 10px 4px;
       border-bottom: 1px solid var(--line);
     }
 
@@ -359,13 +403,14 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--text-faint);
-      width: 22px;
+      font-weight: 700;
+      width: 20px;
     }
 
     .relay-name {
-      font-size: 13.5px;
+      font-size: 14px;
       color: var(--text);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .relay-trigger {
@@ -374,39 +419,67 @@
       color: var(--text-faint);
     }
 
-    .switch {
-      width: 42px;
-      height: 23px;
-      border-radius: 20px;
-      background: var(--line);
+    /* Desain Saklar Rocker Industrial 3D */
+    .rocker-switch {
       position: relative;
-      transition: background 0.25s ease;
+      width: 54px;
+      height: 32px;
+      background: #27272A;
+      border-radius: 6px;
+      padding: 3px;
+      cursor: pointer;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(255, 255, 255, 0.8);
+      user-select: none;
       flex-shrink: 0;
     }
 
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      background: var(--text-faint);
-      transition: transform 0.25s ease, background 0.25s ease;
+    .rocker-btn {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #3F3F46 0%, #18181B 100%);
+      border-radius: 4px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      box-shadow: 0 3px 0 #09090B, 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .switch.on {
-      background: rgba(61, 214, 140, 0.18);
+    .rocker-btn::before {
+      content: 'O';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: #71717A;
     }
 
-    .switch.on::after {
-      transform: translateX(19px);
-      background: var(--signal-ok);
-      box-shadow: 0 0 6px var(--signal-ok-glow);
+    .rocker-btn::after {
+      content: '|';
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: #3F3F46;
     }
 
-    /* ============ CLIMATE ============ */
+    /* Status Aktif / ON */
+    .rocker-switch.on .rocker-btn {
+      background: linear-gradient(180deg, #059669 0%, #047857 100%);
+      box-shadow: 0 2px 0 #064E3B, inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transform: translateY(1px);
+    }
+
+    .rocker-switch.on .rocker-btn::before {
+      color: #064E3B;
+    }
+
+    .rocker-switch.on .rocker-btn::after {
+      color: #FFFFFF;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    }
+
+    /* ============ CLIMATE & POWER ============ */
     .climate-hero {
       display: flex;
       align-items: baseline;
@@ -416,15 +489,16 @@
 
     .climate-temp {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 52px;
+      font-size: 48px;
       font-weight: 700;
       line-height: 1;
+      color: var(--text);
     }
 
     .climate-unit {
       font-size: 20px;
       color: var(--text-dim);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .climate-status {
@@ -442,20 +516,23 @@
 
     .climate-sub-row .label {
       color: var(--text-dim);
+      font-weight: 500;
     }
 
     .climate-sub-row .val {
       font-family: 'JetBrains Mono', monospace;
       color: var(--text);
+      font-weight: 600;
     }
 
     footer {
-      margin-top: 32px;
+      margin-top: 36px;
       text-align: center;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
+      font-size: 11px;
       color: var(--text-faint);
       letter-spacing: 1px;
+      font-weight: 600;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -475,7 +552,7 @@
 
     <header>
       <div>
-        <div class="brand-eyebrow">Panel Pemantauan &middot; Skripsi IoT</div>
+        <div class="brand-eyebrow">Panel Pemantauan & Control &middot; Skripsi IoT</div>
         <h1>SENTINEL<span>.</span></h1>
       </div>
       <div class="status-block">
@@ -504,14 +581,14 @@
                   <stop offset="100%" stop-color="var(--radar-line)" stop-opacity="0.9" />
                 </linearGradient>
               </defs>
-              <path d="M250,250 L250,70 A180,180 0 0,1 402,160 Z" fill="url(#sweepGrad)" opacity="0.5"></path>
-              <line x1="250" y1="250" x2="250" y2="70" stroke="var(--signal-ok)" stroke-width="1.5"></line>
+              <path d="M250,250 L250,70 A180,180 0 0,1 402,160 Z" fill="url(#sweepGrad)" opacity="0.6"></path>
+              <line x1="250" y1="250" x2="250" y2="70" stroke="var(--signal-ok)" stroke-width="2"></line>
             </g>
 
-            <circle id="node1" class="radar-node" cx="250" cy="100" r="8" fill="var(--text-faint)"></circle>
+            <circle id="node1" class="radar-node" cx="250" cy="100" r="8" fill="#475569"></circle>
             <text class="radar-node-label" x="264" y="105">RCWL</text>
 
-            <circle cx="250" cy="250" r="4" fill="var(--text-dim)"></circle>
+            <circle cx="250" cy="250" r="4" fill="#94A3B8"></circle>
           </svg>
         </div>
         <div class="rcwl-single">
@@ -520,89 +597,82 @@
             <div class="rcwl-state" id="rcwl-state">STANDBY</div>
           </div>
         </div>
+        <div class="panel">
+          <div class="panel-title">Konsumsi Listrik &middot; PZEM-004T</div>
+          <div class="climate-hero">
+            <div class="climate-temp" id="daya-val">--</div>
+            <div class="climate-unit">W</div>
+          </div>
+          <div class="sensor-tag tag-ok climate-status" id="daya-tag">NORMAL</div>
+
+          <div class="climate-sub-row">
+            <span class="label">Energi terpakai</span>
+            <span class="val" id="energi-val">-- kWh</span>
+          </div>
+          <div class="climate-sub-row">
+            <span class="label">Ambang siaga</span>
+            <span class="val">&lt; 5 W</span>
+          </div>
+        </div>
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; flex-direction:column; gap:20px;">
+
         <div class="panel">
           <div class="panel-title">Intensitas Cahaya &middot; BH1750</div>
+
           <div class="sensor-card">
             <div class="sensor-meta">
               <div class="sensor-name">Titik 1</div>
               <div class="sensor-sub">ADDR &middot; D30</div>
             </div>
             <div class="sensor-value">
-              <div class="sensor-num" id="lux-1">--</div>
-              <div class="sensor-tag tag-ok" id="lux-tag-1">TERANG</div>
+              <div>
+                <div class="sensor-num" id="lux-1">--</div>
+                <div class="sensor-tag tag-ok" id="lux-tag-1">TERANG</div>
+              </div>
+              <svg class="light-bulb-icon" id="bulb-1" viewBox="0 0 24 24">
+                <path
+                  d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" />
+              </svg>
             </div>
           </div>
+
           <div class="sensor-card">
             <div class="sensor-meta">
               <div class="sensor-name">Titik 2</div>
               <div class="sensor-sub">ADDR &middot; D32</div>
             </div>
             <div class="sensor-value">
-              <div class="sensor-num" id="lux-2">--</div>
-              <div class="sensor-tag tag-ok" id="lux-tag-2">TERANG</div>
+              <div>
+                <div class="sensor-num" id="lux-2">--</div>
+                <div class="sensor-tag tag-ok" id="lux-tag-2">TERANG</div>
+              </div>
+              <svg class="light-bulb-icon" id="bulb-2" viewBox="0 0 24 24">
+                <path
+                  d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" />
+              </svg>
             </div>
           </div>
+
           <div class="sensor-card">
             <div class="sensor-meta">
               <div class="sensor-name">Titik 3</div>
               <div class="sensor-sub">ADDR &middot; D34</div>
             </div>
             <div class="sensor-value">
-              <div class="sensor-num" id="lux-3">--</div>
-              <div class="sensor-tag tag-ok" id="lux-tag-3">TERANG</div>
+              <div>
+                <div class="sensor-num" id="lux-3">--</div>
+                <div class="sensor-tag tag-ok" id="lux-tag-3">TERANG</div>
+              </div>
+              <svg class="light-bulb-icon" id="bulb-3" viewBox="0 0 24 24">
+                <path
+                  d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" />
+              </svg>
             </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-title">Aktuator &middot; Modul Relay</div>
-          <div class="relay-row">
-            <div class="relay-info">
-              <span class="relay-index">01</span>
-              <div>
-                <div class="relay-name">Lampu Titik 1</div>
-                <div class="relay-trigger">Pin D5 &middot; trigger: gelap</div>
-              </div>
-            </div>
-            <div class="switch" id="relay-1"></div>
-          </div>
-          <div class="relay-row">
-            <div class="relay-info">
-              <span class="relay-index">02</span>
-              <div>
-                <div class="relay-name">Lampu Titik 2</div>
-                <div class="relay-trigger">Pin D6 &middot; trigger: gelap</div>
-              </div>
-            </div>
-            <div class="switch" id="relay-2"></div>
-          </div>
-          <div class="relay-row">
-            <div class="relay-info">
-              <span class="relay-index">03</span>
-              <div>
-                <div class="relay-name">Lampu Titik 3</div>
-                <div class="relay-trigger">Pin D7 &middot; trigger: gelap</div>
-              </div>
-            </div>
-            <div class="switch" id="relay-3"></div>
-          </div>
-          <div class="relay-row">
-            <div class="relay-info">
-              <span class="relay-index">04</span>
-              <div>
-                <div class="relay-name">Sirkulasi / Pendingin</div>
-                <div class="relay-trigger">Pin D4 &middot; trigger: panas</div>
-              </div>
-            </div>
-            <div class="switch" id="relay-4"></div>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex; flex-direction:column; gap:18px;">
         <div class="panel">
           <div class="panel-title">Iklim Ruangan &middot; DHT11</div>
           <div class="climate-hero">
@@ -629,32 +699,121 @@
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-title">Konsumsi Listrik &middot; PZEM-004T</div>
-          <div class="climate-hero">
-            <div class="climate-temp" id="daya-val">--</div>
-            <div class="climate-unit">W</div>
-          </div>
-          <div class="sensor-tag tag-ok climate-status" id="daya-tag">NORMAL</div>
 
-          <div class="climate-sub-row">
-            <span class="label">Energi terpakai</span>
-            <span class="val" id="energi-val">-- kWh</span>
+
+
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div class="panel">
+          <div class="panel-title">Panel Kendali Aktuator (7 Relay)</div>
+
+          <div class="control-section-title">Kendali Lampu</div>
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">01</span>
+              <div>
+                <div class="relay-name">Lampu Titik 1</div>
+                <div class="relay-trigger">Relay Pin D5</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-lampu1" onclick="toggleRelay('lampu1')">
+              <div class="rocker-btn"></div>
+            </div>
           </div>
-          <div class="climate-sub-row">
-            <span class="label">Ambang siaga</span>
-            <span class="val">&lt; 5 W</span>
+
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">02</span>
+              <div>
+                <div class="relay-name">Lampu Titik 2</div>
+                <div class="relay-trigger">Relay Pin D6</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-lampu2" onclick="toggleRelay('lampu2')">
+              <div class="rocker-btn"></div>
+            </div>
           </div>
+
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">03</span>
+              <div>
+                <div class="relay-name">Lampu Titik 3</div>
+                <div class="relay-trigger">Relay Pin D7</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-lampu3" onclick="toggleRelay('lampu3')">
+              <div class="rocker-btn"></div>
+            </div>
+          </div>
+
+          <div class="control-section-title">Kendali Stopkontak</div>
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">04</span>
+              <div>
+                <div class="relay-name">Stopkontak 1</div>
+                <div class="relay-trigger">Relay Pin D51</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-sk1" onclick="toggleRelay('sk1')">
+              <div class="rocker-btn"></div>
+            </div>
+          </div>
+
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">05</span>
+              <div>
+                <div class="relay-name">Stopkontak 2</div>
+                <div class="relay-trigger">Relay Pin D52</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-sk2" onclick="toggleRelay('sk2')">
+              <div class="rocker-btn"></div>
+            </div>
+          </div>
+
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">06</span>
+              <div>
+                <div class="relay-name">Stopkontak 3</div>
+                <div class="relay-trigger">Relay Pin D53</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-sk3" onclick="toggleRelay('sk3')">
+              <div class="rocker-btn"></div>
+            </div>
+          </div>
+
+          <div class="control-section-title">Kendali Sirkulasi</div>
+          <div class="relay-row">
+            <div class="relay-info">
+              <span class="relay-index">07</span>
+              <div>
+                <div class="relay-name">Kipas / Pendingin</div>
+                <div class="relay-trigger">Relay Pin D4</div>
+              </div>
+            </div>
+            <div class="rocker-switch" id="switch-kipas" onclick="toggleRelay('kipas')">
+              <div class="rocker-btn"></div>
+            </div>
+          </div>
+
         </div>
+
       </div>
 
     </div>
 
-    <footer>SENTINEL MONITOR &middot; ARDUINO MEGA + ESP32 &middot; DATA VIA FIREBASE REALTIME DATABASE</footer>
+    <footer>SENTINEL MONITOR & CONTROL &middot; ARDUINO MEGA + ESP32 &middot; DATA VIA FIREBASE REALTIME DATABASE
+    </footer>
   </div>
 
   <script>
-    // ================== KONFIGURASI ==================
+    // ================== KONFIGURASI FIREBASE ==================
     const FIREBASE_HOST = "https://smarthomesistem-6d3c4-default-rtdb.asia-southeast1.firebasedatabase.app";
     const FIREBASE_PATH = "/sensor.json";
     const FIREBASE_AUTH = ""; // Tambahkan "?auth=XXXX" jika menggunakan DB secret
@@ -663,6 +822,17 @@
     const TEMP_THRESHOLD = 35;
     const POWER_IDLE_THRESHOLD = 5;
     const POLL_MS = 2000;
+
+    // State awal 7 Saklar Relay
+    let relayState = {
+      lampu1: false,
+      lampu2: false,
+      lampu3: false,
+      sk1: false,
+      sk2: false,
+      sk3: false,
+      kipas: false
+    };
 
     // ================== JAM ==================
     function tickClock() {
@@ -673,7 +843,7 @@
     tickClock();
     setInterval(tickClock, 1000);
 
-    // ================== RENDER ==================
+    // ================== RENDER UI ==================
     function setConn(ok) {
       const dot = document.getElementById('connDot');
       const label = document.getElementById('connLabel');
@@ -681,21 +851,33 @@
       label.textContent = ok ? 'Live' : 'Terputus';
     }
 
-    function renderLux(idx, value) {
+    // Render Nilai Lux & Status Bohlam
+    function renderLux(idx, value, isRelayActive) {
       const el = document.getElementById('lux-' + idx);
       const tag = document.getElementById('lux-tag-' + idx);
+      const bulb = document.getElementById('bulb-' + idx);
+
       if (value === null || value === undefined || isNaN(value) || value < 0) {
         el.textContent = '--';
+        bulb.classList.remove('active');
         return;
       }
+
       el.textContent = Math.round(value);
       const gelap = value < LUX_THRESHOLD;
       tag.textContent = gelap ? 'GELAP' : 'TERANG';
       tag.className = 'sensor-tag ' + (gelap ? 'tag-alert' : 'tag-ok');
-      document.getElementById('relay-' + idx).className = 'switch' + (gelap ? ' on' : '');
+
+      // Bohlam bersinar kuning jika diset ON atau saat kondisi malam/gelap
+      const isLit = isRelayActive || gelap;
+      if (isLit) {
+        bulb.classList.add('active');
+      } else {
+        bulb.classList.remove('active');
+      }
     }
 
-    // Render 1 Sensor RCWL
+    // Render Status RCWL
     function renderRcwl(state) {
       const card = document.getElementById('rcwl-card');
       const stateEl = document.getElementById('rcwl-state');
@@ -705,9 +887,10 @@
       stateEl.textContent = active ? 'GERAKAN TERDETEKSI' : 'AMAN / STANDBY';
       card.className = 'rcwl-item' + (active ? ' active' : '');
       node.setAttribute('r', active ? '12' : '8');
-      node.setAttribute('fill', active ? 'var(--signal-alert)' : 'var(--text-faint)');
+      node.setAttribute('fill', active ? 'var(--signal-alert)' : '#475569');
     }
 
+    // Render Suhu & Kelembapan
     function renderClimate(suhu, rh) {
       const suhuEl = document.getElementById('suhu-val');
       const tag = document.getElementById('suhu-tag');
@@ -720,11 +903,11 @@
         const panas = Number(suhu) > TEMP_THRESHOLD;
         tag.textContent = panas ? 'PANAS' : 'NORMAL';
         tag.className = 'sensor-tag climate-status ' + (panas ? 'tag-alert' : 'tag-ok');
-        document.getElementById('relay-4').className = 'switch' + (panas ? ' on' : '');
       }
       rhEl.textContent = (rh === null || rh === undefined || isNaN(rh)) ? '-- %RH' : Number(rh).toFixed(0) + ' %RH';
     }
 
+    // Render Daya & Energi Listrik
     function renderPower(daya, energi) {
       const dayaEl = document.getElementById('daya-val');
       const tag = document.getElementById('daya-tag');
@@ -741,6 +924,41 @@
       energiEl.textContent = (energi === null || energi === undefined || isNaN(energi)) ? '-- kWh' : Number(energi).toFixed(3) + ' kWh';
     }
 
+    // Render Tampilan 7 Saklar Rocker 3D
+    function renderSwitches() {
+      Object.keys(relayState).forEach(key => {
+        const el = document.getElementById('switch-' + key);
+        if (el) {
+          if (relayState[key]) {
+            el.classList.add('on');
+          } else {
+            el.classList.remove('on');
+          }
+        }
+      });
+    }
+
+    // ================== KENDALI AKTUATOR (PATCH TO FIREBASE) ==================
+    async function toggleRelay(key) {
+      relayState[key] = !relayState[key];
+      renderSwitches();
+
+      try {
+        const url = FIREBASE_HOST + FIREBASE_PATH + FIREBASE_AUTH;
+        const payload = {};
+        payload['relay_' + key] = relayState[key] ? 1 : 0;
+
+        await fetch(url, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.error('Gagal memperbarui status saklar ke Firebase:', err);
+      }
+    }
+
+    // ================== FETCH DATA REALTIME ==================
     async function fetchData() {
       try {
         const url = FIREBASE_HOST + FIREBASE_PATH + FIREBASE_AUTH;
@@ -751,13 +969,26 @@
 
         setConn(true);
 
-        // Membaca 'rcwl' tunggal dari Firebase
+        // Sinkronisasi status saklar dari Firebase
+        if (data.relay_lampu1 !== undefined) relayState.lampu1 = Boolean(data.relay_lampu1);
+        if (data.relay_lampu2 !== undefined) relayState.lampu2 = Boolean(data.relay_lampu2);
+        if (data.relay_lampu3 !== undefined) relayState.lampu3 = Boolean(data.relay_lampu3);
+        if (data.relay_sk1 !== undefined) relayState.sk1 = Boolean(data.relay_sk1);
+        if (data.relay_sk2 !== undefined) relayState.sk2 = Boolean(data.relay_sk2);
+        if (data.relay_sk3 !== undefined) relayState.sk3 = Boolean(data.relay_sk3);
+        if (data.relay_kipas !== undefined) relayState.kipas = Boolean(data.relay_kipas);
+
+        renderSwitches();
+
+        // Sensor Gerak
         renderRcwl(data.rcwl);
 
-        renderLux(1, data.lux1);
-        renderLux(2, data.lux2);
-        renderLux(3, data.lux3);
+        // Sensor Cahaya BH1750
+        renderLux(1, data.lux1, relayState.lampu1);
+        renderLux(2, data.lux2, relayState.lampu2);
+        renderLux(3, data.lux3, relayState.lampu3);
 
+        // Suhu & Konsumsi Listrik
         renderClimate(data.suhu, data.kelembaban);
         renderPower(data.daya, data.energi);
 
@@ -771,6 +1002,7 @@
     fetchData();
     setInterval(fetchData, POLL_MS);
 
+    // Tambahkan kode ini di bagian <script> index.html Anda
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
