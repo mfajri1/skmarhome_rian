@@ -157,6 +157,17 @@
       gap: 20px;
     }
 
+    @keyframes spin-fan {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .fan-icon.active {
+      fill: #0EA5E9 !important; /* Warna biru muda terang */
+      filter: drop-shadow(0px 0px 8px rgba(14, 165, 233, 0.45));
+      animation: spin-fan 1s linear infinite;
+    }
+
     @media (max-width:980px) {
       .grid {
         grid-template-columns: 1fr;
@@ -601,7 +612,7 @@
           <div class="panel-title">Konsumsi Listrik &middot; PZEM-004T</div>
           <div class="climate-hero">
             <div class="climate-temp" id="daya-val">--</div>
-            <div class="climate-unit">W</div>
+            <div class="climate-unit">WATT</div>
           </div>
           <div class="sensor-tag tag-ok climate-status" id="daya-tag">NORMAL</div>
 
@@ -623,13 +634,13 @@
 
           <div class="sensor-card">
             <div class="sensor-meta">
-              <div class="sensor-name">Titik 1</div>
+              <div class="sensor-name">Ruangan 1</div>
               <div class="sensor-sub">ADDR &middot; D30</div>
             </div>
             <div class="sensor-value">
               <div>
                 <div class="sensor-num" id="lux-1">--</div>
-                <div class="sensor-tag tag-ok" id="lux-tag-1">TERANG</div>
+                <div class="sensor-tag tag-ok" id="lux-tag-1">MENYALA</div>
               </div>
               <svg class="light-bulb-icon" id="bulb-1" viewBox="0 0 24 24">
                 <path
@@ -640,7 +651,7 @@
 
           <div class="sensor-card">
             <div class="sensor-meta">
-              <div class="sensor-name">Titik 2</div>
+              <div class="sensor-name">Ruangan 2</div>
               <div class="sensor-sub">ADDR &middot; D32</div>
             </div>
             <div class="sensor-value">
@@ -657,7 +668,7 @@
 
           <div class="sensor-card">
             <div class="sensor-meta">
-              <div class="sensor-name">Titik 3</div>
+              <div class="sensor-name">Ruangan 3</div>
               <div class="sensor-sub">ADDR &middot; D34</div>
             </div>
             <div class="sensor-value">
@@ -675,10 +686,22 @@
 
         <div class="panel">
           <div class="panel-title">Iklim Ruangan &middot; DHT11</div>
-          <div class="climate-hero">
-            <div class="climate-temp" id="suhu-val">--</div>
-            <div class="climate-unit">&deg;C</div>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px;">
+            <div class="climate-hero">
+              <div class="climate-temp" id="suhu-val">--</div>
+              <div class="climate-unit">&deg;C</div>
+            </div>
+
+            <!-- Blok Status & Ikon Kipas di Samping Suhu -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="fan-status-text" class="sensor-tag tag-ok" style="background: var(--line); color: var(--text-dim);">MATI</span>
+              <svg id="fan-icon" class="fan-icon" viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: var(--text-faint); transition: all 0.3s ease;">
+                <path d="M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0-2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0-7a3 3 0 0 1 3 3c0 2-1.5 3-3 4-1.5-1-3-2-3-4a3 3 0 0 1 3-3zm7 7a3 3 0 0 1 3 3c0 1.5-1 3-3 3-2 0-3-1.5-4-3 1-1.5 2-3 4-3zm-14 0c2 0 3 1.5 4 3-1 1.5-2 3-4 3a3 3 0 0 1-3-3c0-1.5 1-3 3-3zm7 7c1.5 1 3 2 3 4a3 3 0 0 1-6 0c0-2 1.5-3 3-4z"/>
+              </svg>
+            </div>
           </div>
+
           <div class="sensor-tag tag-ok climate-status" id="suhu-tag">NORMAL</div>
 
           <div class="climate-sub-row">
@@ -698,10 +721,6 @@
             <span class="val" id="lastSync">--</span>
           </div>
         </div>
-
-
-
-
       </div>
 
       <div style="display:flex; flex-direction:column; gap:20px;">
@@ -865,12 +884,11 @@
 
       el.textContent = Math.round(value);
       const gelap = value < LUX_THRESHOLD;
-      tag.textContent = gelap ? 'GELAP' : 'TERANG';
-      tag.className = 'sensor-tag ' + (gelap ? 'tag-alert' : 'tag-ok');
+      tag.textContent = gelap ? 'MENYALA' : 'MATI';
+      tag.className = 'sensor-tag ' + (gelap ? 'tag-ok' : 'tag-alert');
 
       // Bohlam bersinar kuning jika diset ON atau saat kondisi malam/gelap
-      const isLit = isRelayActive || gelap;
-      if (isLit) {
+      if (value < LUX_THRESHOLD) {
         bulb.classList.add('active');
       } else {
         bulb.classList.remove('active');
@@ -884,7 +902,7 @@
       const node = document.getElementById('node1');
       const active = Number(state) === 1;
 
-      stateEl.textContent = active ? 'GERAKAN TERDETEKSI' : 'AMAN / STANDBY';
+      stateEl.textContent = active ? 'RUANGAN 1 ADA GERAKAN' : 'RUANGAN 1 STANDBY';
       card.className = 'rcwl-item' + (active ? ' active' : '');
       node.setAttribute('r', active ? '12' : '8');
       node.setAttribute('fill', active ? 'var(--signal-alert)' : '#475569');
@@ -922,6 +940,42 @@
         tag.className = 'sensor-tag climate-status ' + (siaga ? 'tag-warn' : 'tag-ok');
       }
       energiEl.textContent = (energi === null || energi === undefined || isNaN(energi)) ? '-- kWh' : Number(energi).toFixed(3) + ' kWh';
+    }
+
+    function renderClimate(suhu, rh, relayKipas) {
+      const suhuEl = document.getElementById('suhu-val');
+      const tag = document.getElementById('suhu-tag');
+      const rhEl = document.getElementById('rh-val');
+      
+      const fanText = document.getElementById('fan-status-text');
+      const fanIcon = document.getElementById('fan-icon');
+
+      if (suhu === null || suhu === undefined || isNaN(suhu)) {
+        suhuEl.textContent = '--';
+      } else {
+        suhuEl.textContent = Number(suhu).toFixed(1);
+        const panas = Number(suhu) > TEMP_THRESHOLD;
+        tag.textContent = panas ? 'PANAS' : 'NORMAL';
+        tag.className = 'sensor-tag climate-status ' + (panas ? 'tag-alert' : 'tag-ok');
+      }
+      
+      rhEl.textContent = (rh === null || rh === undefined || isNaN(rh)) ? '-- %RH' : Number(rh).toFixed(0) + ' %RH';
+
+      // Update Tampilan Status & Ikon Kipas di Samping Suhu
+      const isFanOn = Number(relayKipas) === 1 || relayKipas === true;
+      if (fanText && fanIcon) {
+        if (isFanOn) {
+          fanText.textContent = 'KIPAS ON';
+          fanText.className = 'sensor-tag tag-ok'; // Warna Hijau
+          fanText.removeAttribute('style'); // Hapus style inline jika ada
+          fanIcon.classList.add('active');
+        } else {
+          fanText.textContent = 'KIPAS OFF';
+          fanText.className = 'sensor-tag tag-alert'; // Warna Merah
+          fanText.removeAttribute('style'); // Hapus style inline jika ada
+          fanIcon.classList.remove('active');
+        }
+      }
     }
 
     // Render Tampilan 7 Saklar Rocker 3D
@@ -991,6 +1045,7 @@
         // Suhu & Konsumsi Listrik
         renderClimate(data.suhu, data.kelembaban);
         renderPower(data.daya, data.energi);
+        renderClimate(data.suhu, data.kelembaban, data.relay_kipas);
 
         document.getElementById('lastSync').textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
       } catch (err) {
