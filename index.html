@@ -158,12 +158,18 @@
     }
 
     @keyframes spin-fan {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .fan-icon.active {
-      fill: #0EA5E9 !important; /* Warna biru muda terang */
+      fill: #0EA5E9 !important;
+      /* Warna biru muda terang */
       filter: drop-shadow(0px 0px 8px rgba(14, 165, 233, 0.45));
       animation: spin-fan 1s linear infinite;
     }
@@ -686,8 +692,9 @@
 
         <div class="panel">
           <div class="panel-title">Iklim Ruangan &middot; DHT11</div>
-          
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px;">
+
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px;">
             <div class="climate-hero">
               <div class="climate-temp" id="suhu-val">--</div>
               <div class="climate-unit">&deg;C</div>
@@ -695,9 +702,12 @@
 
             <!-- Blok Status & Ikon Kipas di Samping Suhu -->
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span id="fan-status-text" class="sensor-tag tag-ok" style="background: var(--line); color: var(--text-dim);">MATI</span>
-              <svg id="fan-icon" class="fan-icon" viewBox="0 0 24 24" style="width: 32px; height: 32px; fill: var(--text-faint); transition: all 0.3s ease;">
-                <path d="M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0-2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0-7a3 3 0 0 1 3 3c0 2-1.5 3-3 4-1.5-1-3-2-3-4a3 3 0 0 1 3-3zm7 7a3 3 0 0 1 3 3c0 1.5-1 3-3 3-2 0-3-1.5-4-3 1-1.5 2-3 4-3zm-14 0c2 0 3 1.5 4 3-1 1.5-2 3-4 3a3 3 0 0 1-3-3c0-1.5 1-3 3-3zm7 7c1.5 1 3 2 3 4a3 3 0 0 1-6 0c0-2 1.5-3 3-4z"/>
+              <span id="fan-status-text" class="sensor-tag tag-ok"
+                style="background: var(--line); color: var(--text-dim);">MATI</span>
+              <svg id="fan-icon" class="fan-icon" viewBox="0 0 24 24"
+                style="width: 32px; height: 32px; fill: var(--text-faint); transition: all 0.3s ease;">
+                <path
+                  d="M12 11a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm0-2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0-7a3 3 0 0 1 3 3c0 2-1.5 3-3 4-1.5-1-3-2-3-4a3 3 0 0 1 3-3zm7 7a3 3 0 0 1 3 3c0 1.5-1 3-3 3-2 0-3-1.5-4-3 1-1.5 2-3 4-3zm-14 0c2 0 3 1.5 4 3-1 1.5-2 3-4 3a3 3 0 0 1-3-3c0-1.5 1-3 3-3zm7 7c1.5 1 3 2 3 4a3 3 0 0 1-6 0c0-2 1.5-3 3-4z" />
               </svg>
             </div>
           </div>
@@ -732,7 +742,7 @@
             <div class="relay-info">
               <span class="relay-index">01</span>
               <div>
-                <div class="relay-name">Lampu Titik 1</div>
+                <div class="relay-name">Lampu Ruangan 1</div>
                 <div class="relay-trigger">Relay Pin D5</div>
               </div>
             </div>
@@ -745,7 +755,7 @@
             <div class="relay-info">
               <span class="relay-index">02</span>
               <div>
-                <div class="relay-name">Lampu Titik 2</div>
+                <div class="relay-name">Lampu Ruangan 2</div>
                 <div class="relay-trigger">Relay Pin D6</div>
               </div>
             </div>
@@ -758,7 +768,7 @@
             <div class="relay-info">
               <span class="relay-index">03</span>
               <div>
-                <div class="relay-name">Lampu Titik 3</div>
+                <div class="relay-name">Lampu Ruangan 3</div>
                 <div class="relay-trigger">Relay Pin D7</div>
               </div>
             </div>
@@ -946,33 +956,37 @@
       const suhuEl = document.getElementById('suhu-val');
       const tag = document.getElementById('suhu-tag');
       const rhEl = document.getElementById('rh-val');
-      
+
       const fanText = document.getElementById('fan-status-text');
       const fanIcon = document.getElementById('fan-icon');
+
+      let suhuPanas = false;
 
       if (suhu === null || suhu === undefined || isNaN(suhu)) {
         suhuEl.textContent = '--';
       } else {
         suhuEl.textContent = Number(suhu).toFixed(1);
-        const panas = Number(suhu) > TEMP_THRESHOLD;
-        tag.textContent = panas ? 'PANAS' : 'NORMAL';
-        tag.className = 'sensor-tag climate-status ' + (panas ? 'tag-alert' : 'tag-ok');
+        suhuPanas = Number(suhu) >= TEMP_THRESHOLD;
+        tag.textContent = suhuPanas ? 'PANAS' : 'NORMAL';
+        tag.className = 'sensor-tag climate-status ' + (suhuPanas ? 'tag-alert' : 'tag-ok');
       }
-      
+
       rhEl.textContent = (rh === null || rh === undefined || isNaN(rh)) ? '-- %RH' : Number(rh).toFixed(0) + ' %RH';
 
-      // Update Tampilan Status & Ikon Kipas di Samping Suhu
-      const isFanOn = Number(relayKipas) === 1 || relayKipas === true;
+      // Status kipas: ON hanya jika suhu >= 35°C DAN relay kipas dalam kondisi hidup
+      const relayOn = Number(relayKipas) === 1 || relayKipas === true;
+      const isFanOn = suhuPanas && relayOn;
+
       if (fanText && fanIcon) {
         if (isFanOn) {
           fanText.textContent = 'KIPAS ON';
           fanText.className = 'sensor-tag tag-ok'; // Warna Hijau
-          fanText.removeAttribute('style'); // Hapus style inline jika ada
+          fanText.removeAttribute('style');
           fanIcon.classList.add('active');
         } else {
           fanText.textContent = 'KIPAS OFF';
           fanText.className = 'sensor-tag tag-alert'; // Warna Merah
-          fanText.removeAttribute('style'); // Hapus style inline jika ada
+          fanText.removeAttribute('style');
           fanIcon.classList.remove('active');
         }
       }
